@@ -15,6 +15,7 @@ For the real-world scenarios, the training should be run regularly with new data
 The serving component runs a Flask app within a Docker container to handle requests. It uses the trained model to generate recommendations and interacts with a local SQLite database to fetch movie metadata and user rating history.
 
 ## Input & Output Examples
+the code to generate example can be found in `print_sample_result.py`
 - example 1:
    ```
    GET http://localhost:80/recommendations?user_id=18
@@ -47,34 +48,41 @@ The serving component runs a Flask app within a Docker container to handle reque
 - **Batch Predictions**: Calculate predictions in batches to optimize processing speed and efficiency.
 ---
 
-## Testing with Python Environment
+## Testing
+There are 2 types of tests provided:
+1) in a **local development environment using Flask's test client** for easy debugging.  (`tests/test_flask_app.py`)
+2) against a **Docker container** to ensure production-like conditions. The testing process ensures that all parts of the application perform as expected before deployment. (`tests/test_endpoint.py`)
 
-### Environment Setup
+
+### Testing with Python Environment
+
+
+#### Environment Setup
 1) make sure you have python 3.11 installed
 1) install required python packages
     ```bash
     pip install -r requirements.txt
     ```
-### Running Tests with Flask Test Client
+#### Running Tests with Flask Test Client
 ```bash
 pytest tests/test_flask_app.py
 ```
 
-## Testing with Docker Container
+### Testing with Docker Container
 
-### Starting the Container
+#### Starting the Container
 ```bash
 docker build -t myapp .
 docker run -d -p 80:80 --name myapp-container myapp
 docker logs -f myapp-container
 ```
 
-### Running Tests Against the Container
+#### Running Tests Against the Container
 ```bash
 pytest tests/test_endpoint.py
 ```
 
-### Stopping the Container
+#### Stopping the Container
 ```bash
 docker stop myapp-container
 docker rm myapp-container
