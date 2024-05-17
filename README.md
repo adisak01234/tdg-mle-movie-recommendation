@@ -2,24 +2,19 @@
 
 ---
 
-## How does it work
-This is a containerized application to serve movie recommendation for each user. It is roughly divided into 2 components: traning and serving. 
-
+## Overview
+This is a containerized application designed to provide movie recommendations for each user. It consists of two main components: **training** and **serving**.
 ### Training
-SVD algorithm of the library `surprise` is used to build the model from the dataset provided.
-The trained model can predict ratings of movies given `user_id`. The trained model is then saved to `model/model.joblib` to be used in the serving. 
-The code is in `model_training/train_model.py`.
+We use the Singular Value Decomposition (SVD) algorithm from the `surprise` library to build the model. After training, the model, which predicts movie ratings based on `user_id`, is saved as `model/model.joblib`. The training code is located in `model_training/train_model.py`.
 
-The performance of the model was tested by splitting the interactions into 80:20 and then calculating RMSE of the test set. Which resulted in RMSE=0.87.
+The model's accuracy was evaluated by splitting the data 80:20 and achieving a Root Mean Square Error (RMSE) of 0.87.
 
-For the real-world scenarios, the training be run regularly to update the information of the rating.
+For the real-world scenarios, the training should be run regularly with new data to update the information of the rating.
 
 ### Serving
-For the serving component, a Flask app will run inside a docker container to serve the request via HTTP and return results as JSON.
-The serving component uses the model trained from the previous step. It also interacts with local sqlite database to get the movie metadata and list of movies users have seen. 
+The serving component runs a Flask app within a Docker container to handle requests. It uses the trained model to generate recommendations and interacts with a local SQLite database to fetch movie metadata and user rating history.
 
-
-## Input & Output examples
+## Input & Output Examples
 - example 1:
    ```
    GET http://localhost:80/recommendations?user_id=18
@@ -45,12 +40,11 @@ The serving component uses the model trained from the previous step. It also int
    ```
 
 ## Future Improvements
-- **Storing model at a location that is shared across containers** to avoid unnecessary duplications and allow updating the model regularly.
-- **Use better database**. The `sqlite` database is used in this project for simplicity sake. For production, other database should be used to allow better performance and sharing the data across environment.
-- **Having config file**. In real-world scenarios, you will need a config to specify the data location, port, debugging flag, and so on for different environments.
-- **Using model that can receive movie ratings as inputs as serving time**. Currently, this model (SVD) can only predict the rating given `user_id`. It cannot handle when the users are not present in the training process. Also, the rating that we are using as features will be refresh on training batch job, not realtime.
-- **Calculating the predictions in batch** instead of one by one request so that the calculation can be vectorized. However, you will need additional mechanics to batch multiple request.
-
+- **Centralized Model Storage**: Storing the model at a shared location across containers will minimize duplication and streamline updates.
+- **Upgraded Database**: Move from SQLite to a more robust database system for enhanced performance and better data sharing capabilities.
+- **Configuration File**: Implement a configuration file to define data locations, ports, and other environment-specific settings.
+- **Dynamic Model Inputs**: Adapt the model to accept movie ratings in real-time, allowing for more dynamic recommendation adjustments.
+- **Batch Predictions**: Calculate predictions in batches to optimize processing speed and efficiency.
 ---
 
 ## Testing with Python Environment
