@@ -46,5 +46,11 @@ test_pred_ratings = [pred.est for pred in test_predictions]
 test_r2 = r2_score(test_true_ratings, test_pred_ratings)
 print(f"Test R2: {test_r2}")
 
+
+trainset_full = data.build_full_trainset()
+
+algo_full = SVD(n_factors=100, n_epochs=20, lr_all=0.005, reg_all=0.02)
+algo_full.fit(trainset_full)
+
 # Save the model to a file
-dump(algo, os.path.join(__file__, '../../model/model.joblib'))
+dump(algo_full, os.path.join(__file__, '../../model/model.joblib'))
