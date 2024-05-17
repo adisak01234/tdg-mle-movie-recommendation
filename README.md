@@ -4,6 +4,9 @@
 
 ## Overview
 This is a containerized application designed to provide movie recommendations for each user. It consists of two main components: **training** and **serving**.
+![alt text](diagram.png)
+
+
 ### Training
 We use the Singular Value Decomposition (SVD) algorithm from the `surprise` library to build the model. After training, the model, which predicts movie ratings based on `user_id`, is saved as `model/model.joblib`. The training code is located in `model_training/train_model.py`.
 
@@ -13,6 +16,7 @@ For the real-world scenarios, the training should be run regularly with new data
 
 ### Serving
 The serving component runs a Flask app within a Docker container to handle requests. It uses the trained model to generate recommendations and interacts with a local SQLite database to fetch movie metadata and user rating history.
+The requests will be serve via HTTP API.
 
 ## Input & Output Examples
 the code to generate example can be found in `print_sample_result.py`
