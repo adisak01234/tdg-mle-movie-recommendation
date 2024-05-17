@@ -1,17 +1,24 @@
-from flask import Blueprint, request, jsonify
-from .recommendation import get_recommendations, get_features
+from flask import Flask
+from flask import request, jsonify
+from app.recommendation import get_recommendations, get_features
 
-main = Blueprint('main', __name__)
+
+app = Flask(__name__)
 
 
-@main.route('/recommendations')
+@app.route('/recommendations')
 def recommendations():
     user_id = request.args.get('user_id', type=int)
     return_metadata = request.args.get('returnMetadata', type=bool, default=False)
     return jsonify(get_recommendations(user_id, return_metadata))
 
 
-@main.route('/features')
+@app.route('/features')
 def features():
     user_id = request.args.get('user_id', type=int)
     return jsonify(get_features(user_id))
+
+
+if __name__ == "__main__":
+    # Only for debugging while developing
+    app.run(host="0.0.0.0", debug=True, port=80)

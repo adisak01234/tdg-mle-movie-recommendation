@@ -41,7 +41,7 @@ def initialize_database(data_dir, db_path):
 
     # Read CSV files
     movies_df = pd.read_csv(os.path.join(data_dir, 'movies.csv'))
-    ratings_df = pd.read_csv(os.path.join(data_dir, 'ratings.csv')).query("0.5<=rating<=5")
+    ratings_df = pd.read_csv(os.path.join(data_dir, 'ratings.csv')).query("~userId.isna()").query("0.5<=rating<=5")
 
     # Remove rows with NaN values in the userId column and convert types
     ratings_df.dropna(subset=['userId'], inplace=True)
